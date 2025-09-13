@@ -21,10 +21,15 @@ export const auth = async (
       salt: "authjs.session-token",
     });
 
-    (req as any).user = decoded;
+    if (!decoded) {
+      res.status(401).json({ error: "Unauthorized - Invalid token" });
+      return;
+    }
+
+    req.user = decoded;
     next();
   } catch (error) {
-    console.error("Authentication error:", error);
+    // console.error("Authentication error:", error);
     res.status(401).json({ error: "Unauthorized - Invalid token" });
   }
 };
